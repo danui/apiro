@@ -2,16 +2,15 @@ package com.danui.apiro;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Route {
+class Route {
 
     private final Pattern pattern;
     private final Endpoint endpoint;
 
-    public Route(String regex, Endpoint endpoint) throws PatternSyntaxException{
+    Route(String regex, Endpoint endpoint) {
         this.pattern = Pattern.compile(regex);
         this.endpoint = endpoint;
     }
@@ -23,7 +22,7 @@ public class Route {
      *
      * @return True if request was matched and handled.
      */
-    public boolean handle(HttpServletRequest req, HttpServletResponse res) {
+    boolean handle(HttpServletRequest req, HttpServletResponse res) {
         Matcher matcher = pattern.matcher(req.getPathInfo());
         if (matcher.matches()) {
             endpoint.handle(req, res, matcher);
