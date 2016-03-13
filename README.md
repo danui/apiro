@@ -73,3 +73,23 @@ Endpoint and respond accordingly. For example returning 404.
     if (!GET.dispatch(req, res)) {
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
+
+## Where do we specify HTTP method?
+
+We don't. HttpServlet already does that for us. We only want to solve the
+mapping of path (Path Info) to endpoint. To work with more than one HTTP method
+type, have a router for each required HTTP method and then have each
+`do<MethodType>` method dispatch using the correct router. So in `doGet` we
+might invoke...
+
+    GET.dispatch(req, res);
+
+... and in `doPost` we would invoke...
+
+    POST.dispatch(req, res);
+
+Binding remains very readable.
+
+    POST.on("/doc/?", new CreateDoc());
+    GET.on("/doc/?", new ListDocs());
+    GET.on("/doc/"+DOCID+"/?", new GetDoc());
