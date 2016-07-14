@@ -182,23 +182,23 @@ public class QueryStringTest {
     }
 
     @Test
-    public void testHasFlag() throws Exception {
+    public void testGetFlag() throws Exception {
         for (String val : Arrays.asList("true", "TRUE", "True")) {
             QueryString qs = QueryString.parse("key="+val);
-            assertTrue(val+" is true", qs.hasFlag("key"));
+            assertTrue(val+" is true", qs.getFlag("key"));
         }
         for (String val : Arrays.asList("false", "FALSE", "False")) {
             QueryString qs = QueryString.parse("key="+val);
-            assertFalse(val+" is false", qs.hasFlag("key"));
+            assertFalse(val+" is false", qs.getFlag("key"));
         }
         // ...
         {
             QueryString qs = QueryString.parse(
                 "opt1&opt3=true&opt4=false");
-            assertTrue(qs.hasFlag("opt1"));
-            assertFalse(qs.hasFlag("opt2"));
-            assertTrue(qs.hasFlag("opt3"));
-            assertFalse(qs.hasFlag("opt4"));
+            assertTrue(qs.getFlag("opt1"));
+            assertFalse(qs.getFlag("opt2"));
+            assertTrue(qs.getFlag("opt3"));
+            assertFalse(qs.getFlag("opt4"));
         }
 
     }

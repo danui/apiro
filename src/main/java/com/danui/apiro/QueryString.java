@@ -227,13 +227,17 @@ public class QueryString {
     }
 
     /**
-     * Has a flag key.
+     * Get flag
      *
-     * @return False if key does not exist; True if key exists but has
-     *     no value; otherwise the value of getBoolean(key).
+     * Flag is raised when it exist and has no value, or if the value specified
+     * is true.
      *
+     * Flag is not raised when it does not exist or if the value provided if
+     * false.
+     *
+     * @return True if flag is raised.
      */
-    public boolean hasFlag(String key)
+    public boolean getFlag(String key)
         throws MissingParameterException, WrongParameterTypeException {
 
         if (!has(key)) return false;
