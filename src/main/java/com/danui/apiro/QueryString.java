@@ -14,7 +14,9 @@ import java.util.Map;
 public class QueryString {
 
     /**
-     * @param qs Query String
+     * Parse a query string
+     *
+     * @param qs Query String (e.g. from req.getQueryString())
      *
      * @return QueryString object.
      */
@@ -50,6 +52,11 @@ public class QueryString {
     private QueryString() {
     }
 
+    /**
+     * Is the query string empty?
+     *
+     * @return True if there are no query parameters.
+     */
     public boolean isEmpty() {
         return map.isEmpty();
     }
@@ -61,6 +68,22 @@ public class QueryString {
      * a negated key name, such as "!foo". A negated form evaluates to
      * true when the negated key is not in the set of query string
      * parameters.
+     *
+     * For example
+     *
+     *     if (qs.has("timestamp", "!year", "!month", "!day")) {
+     *         // process using timestamp
+     *     }
+     *     else if (qs.has("!timestamp", "year", "month", "day")) {
+     *         // process using year month day
+     *     }
+     *     else if (qs.has("!timestamp", "!year", "!month", "!day")) {
+     *         // process using some default setting
+     *     }
+     *     else {
+     *         throw new BadRequestException(
+     *             "Specify 'timestamp' or 'year,month,day' or nil")
+     *     }
      *
      * @param keys Variable length number of key conditions.
      *
@@ -82,6 +105,10 @@ public class QueryString {
     }
 
     /**
+     * Does a particular query string parameter have a value?
+     *
+     * @param key Query string parameter key.
+     *
      * @return True if 'key' exists and has a value.
      */
     public boolean hasValue(String key) {
@@ -89,14 +116,24 @@ public class QueryString {
     }
 
     /**
-     * @return True if value of key is a string.
+     * Is a particular query string parameter value a string?
+     *
+     * @param key Query string parameter key.
+     *
+     * @return True if value of key is a string. False if it is not or does not
+     *     exist.
      */
     public boolean isString(String key) {
         return hasValue(key);
     }
 
     /**
-     * @return True if value of key is an integer.
+     * Is a particular query string parameter value an integer?
+     *
+     * @param key Query string parameter key.
+     *
+     * @return True if value of key is an integer. False if it is not or does
+     *     not exist.
      */
     public boolean isInteger(String key) {
         if (!has(key)) return false;
@@ -109,7 +146,12 @@ public class QueryString {
     }
 
     /**
-     * @return True if value of key is a long.
+     * Is a particular query string parameter value a long?
+     *
+     * @param key Query string parameter key.
+     *
+     * @return True if value of key is a long. False if it is not or does
+     *     not exist.
      */
     public boolean isLong(String key) {
         if (!has(key)) return false;
@@ -122,7 +164,12 @@ public class QueryString {
     }
 
     /**
-     * @return True if value of key is a boolean.
+     * Is a particular query string parameter value a boolean?
+     *
+     * @param key Query string parameter key.
+     *
+     * @return True if value of key is a boolean. False if it is not or does
+     *     not exist.
      */
     public boolean isBoolean(String key) {
         String val;
@@ -139,7 +186,14 @@ public class QueryString {
     }
 
     /**
+     * Get value of a parameter as a string.
+     *
+     * @param key Query string parameter key.
+     *
      * @return String value of key.
+     *
+     * @throws MissingParameterException when 'key' does not match any query
+     *     parameter.
      */
     public String getString(String key)
         throws MissingParameterException {
@@ -156,7 +210,17 @@ public class QueryString {
     }
 
     /**
+     * Get value of a parameter as an integer.
+     *
+     * @param key Query string parameter key.
+     *
      * @return Integer value of key.
+     *
+     * @throws MissingParameterException when 'key' does not match any query
+     *     parameter.
+     *
+     * @throws WrongParameterTypeException when the value at 'key' is not an
+     *     Integer.
      */
     public int getInteger(String key) throws MissingParameterException,
         WrongParameterTypeException {
@@ -179,7 +243,17 @@ public class QueryString {
     }
 
     /**
+     * Get value of a parameter as a long.
+     *
+     * @param key Query string parameter key.
+     *
      * @return Long value of key.
+     *
+     * @throws MissingParameterException when 'key' does not match any query
+     *     parameter.
+     *
+     * @throws WrongParameterTypeException when the value at 'key' is not a
+     *     Long.
      */
     public long getLong(String key) throws MissingParameterException,
         WrongParameterTypeException {
@@ -202,7 +276,17 @@ public class QueryString {
     }
 
     /**
+     * Get value of a parameter as a boolean.
+     *
+     * @param key Query string parameter key.
+     *
      * @return Boolean value of key.
+     *
+     * @throws MissingParameterException when 'key' does not match any query
+     *     parameter.
+     *
+     * @throws WrongParameterTypeException when the value at 'key' is not a
+     *     Boolean.
      */
     public boolean getBoolean(String key)
         throws MissingParameterException, WrongParameterTypeException {
@@ -235,14 +319,22 @@ public class QueryString {
      * Flag is not raised when it does not exist or if the value provided if
      * false.
      *
+     * @param key Query string parameter key.
+     *
      * @return True if flag is raised.
+     *
+     * @throws WrongParameterTypeException when a value is present at 'key' but
+     *     it is not a Boolean.
      */
-    public boolean getFlag(String key)
-        throws MissingParameterException, WrongParameterTypeException {
-
-        if (!has(key)) return false;
-        if (!hasValue(key)) return true;
-        return getBoolean(key);
+    public boolean getFlag(String key) throws WrongParameterTypeException {
+        try {
+            if (!has(key)) return false;
+            if (!hasValue(key)) return true;
+            return getBoolean(key);
+        } catch (MissingParameterException e) {
+            throw new RuntimeException(
+                "BUG MissingParameterException should never occur");
+        }
     }
 
     private void put(String key, String val) {

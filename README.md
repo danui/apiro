@@ -1,24 +1,16 @@
 # Apiro
 
-A lightweight API Routing library for HTTP servlets.
+A lightweight API Routing library for HTTP servlets without framework or
+annotations.
 
-  - No frameworks!
-  - No annotations!
-
-Just simple Java.
-
-  - No over engineering.
-
-Just does routing.
-
-## Concepts
+## Objects
 
 __Routers__ route HttpServletRequest and HttpServletResponse pairs to
 __Endpoints__. The routing is guided by matching regular expressions.
 
-__Endpoints__ are interfaces that the user application implements. The interface
-consists of a `handle()` method. The method is provided with the request,
-response, and matched matcher.
+__Endpoints__ are interfaces that the user application implements. The
+interface consists of a `handle()` method. The method is provided with the
+request, response, and matched matcher.
 
     public void handle(HttpServletRequest req, HttpServletResponse res,
         Matcher matcher);
@@ -34,7 +26,7 @@ For example, binding a `ListDocsEndpoint` to a `GET` router on the `/doc` path.
 
     GET.on("/doc/?", new ListDocsEndpoint());
 
-The `/?` suffix allows the binding to work for both `/doc` and `/doc/`.
+> The `/?` suffix allows the binding to work for both `/doc` and `/doc/`.
 
 ## Path Parameters
 
@@ -93,3 +85,7 @@ Binding remains very readable.
     POST.on("/doc/?", new CreateDoc());
     GET.on("/doc/?", new ListDocs());
     GET.on("/doc/"+DOCID+"/?", new GetDoc());
+
+## Query Parameters
+
+A QueryString class is provided to aid in parsing query strings.
