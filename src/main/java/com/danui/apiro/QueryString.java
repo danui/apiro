@@ -71,13 +71,13 @@ public class QueryString {
      *
      * For example
      *
-     *     if (qs.has("timestamp", "!year", "!month", "!day")) {
+     *     if (qs.cond("timestamp", "!year", "!month", "!day")) {
      *         // process using timestamp
      *     }
-     *     else if (qs.has("!timestamp", "year", "month", "day")) {
+     *     else if (qs.cond("!timestamp", "year", "month", "day")) {
      *         // process using year month day
      *     }
-     *     else if (qs.has("!timestamp", "!year", "!month", "!day")) {
+     *     else if (qs.cond("!timestamp", "!year", "!month", "!day")) {
      *         // process using some default setting
      *     }
      *     else {
@@ -89,7 +89,7 @@ public class QueryString {
      *
      * @return True when all key conditions evaluate to true.
      */
-    public boolean has(String... keys) {
+    public boolean cond(String... keys) {
         for (String i : Arrays.asList(keys)) {
             if (i.startsWith("!")) {
                 if (map.containsKey(i.substring(1))) {
@@ -102,6 +102,17 @@ public class QueryString {
             }
         }
         return true;
+    }
+
+    /**
+     * Has a particular query string parameter been specified?
+     *
+     * @param key Query string parameter key.
+     *
+     * @return True if 'key' exists.
+     */
+    public boolean has(String key) {
+        return map.containsKey(key);
     }
 
     /**

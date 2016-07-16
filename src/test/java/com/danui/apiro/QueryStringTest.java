@@ -64,17 +64,30 @@ public class QueryStringTest {
     public void testHas() throws Exception {
         QueryString qs = QueryString.parse("a&b&c");
 
-        // Single
-        assertFalse(qs.has("!a"));
-        assertFalse(qs.has("x"));
-        assertTrue(qs.has("!x"));
         assertTrue(qs.has("a"));
+        assertTrue(qs.has("b"));
+        assertTrue(qs.has("c"));
+
+        assertFalse(qs.has("x"));
+        assertFalse(qs.has("y"));
+        assertFalse(qs.has("z"));
+    }
+
+    @Test
+    public void testCond() throws Exception {
+        QueryString qs = QueryString.parse("a&b&c");
+
+        // Single
+        assertFalse(qs.cond("!a"));
+        assertFalse(qs.cond("x"));
+        assertTrue(qs.cond("!x"));
+        assertTrue(qs.cond("a"));
 
         // Multiple
-        assertFalse(qs.has("!a", "b", "c"));
-        assertFalse(qs.has("a", "x"));
-        assertTrue(qs.has("a", "!x"));
-        assertTrue(qs.has("a", "b", "c"));
+        assertFalse(qs.cond("!a", "b", "c"));
+        assertFalse(qs.cond("a", "x"));
+        assertTrue(qs.cond("a", "!x"));
+        assertTrue(qs.cond("a", "b", "c"));
     }
 
     @Test
